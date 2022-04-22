@@ -7,12 +7,15 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     private Vector3 _playermovement;
-    private GoblinStats _goblinStats;
+    private PlayerStats _playerStats;
     [SerializeField] private UiController _uiController;
+    [SerializeField] private CraftController _craftController;
+    [SerializeField] private Transform _house;
     void Start()
     {
-        _goblinStats = new GoblinStats();
-        _uiController.VisualHpChange(_goblinStats.HpChange(0));
+        _playerStats = new PlayerStats();
+        _uiController.VisualHpChange(_playerStats.HpChange(0));
+        _craftController = new CraftController();
     }
     void Update()
     {
@@ -33,16 +36,26 @@ public class Player : MonoBehaviour
             _playermovement.x=-1;
         }
 
-        transform.Translate(_playermovement.normalized*_goblinStats.speed*Time.deltaTime);
+        transform.Translate(_playermovement.normalized*_playerStats.speed*Time.deltaTime);
 
         _playermovement = new Vector3(0, 0, 0);
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            _craftController.Craft(_house,transform);
+        }
+
+        if (_craftController.craftActive == true)
+        {
+            _craftController.MoveCraftedObject();
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         if ((collision.transform.GetComponent(typeof(EnemyBehavior)) as EnemyBehavior).objectType == "enemy")
         {
-            _uiController.VisualHpChange(_goblinStats.HpChange(-1));
+            _uiController.VisualHpChange(_playerStats.HpChange(-1));
         }
     }
 }
