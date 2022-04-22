@@ -1,39 +1,48 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using DefaultNamespace;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public Transform PlayerTransform;
-
-    public int PlayerSpeed=0;
-
-    public Vector3 Playermovement;
+    private Vector3 _playermovement;
+    private GoblinStats _goblinStats;
+    [SerializeField] private UiController _uiController;
     void Start()
     {
-        PlayerTransform = this.GetComponent<Transform>();
+        _goblinStats = new GoblinStats();
+        _uiController.VisualHpChange(_goblinStats.HpChange(0));
     }
     void Update()
     {
         if (Input.GetKey(KeyCode.W))
         {
-            Playermovement.z=+1;
+            _playermovement.z=+1;
         }
         if (Input.GetKey(KeyCode.S))
         {
-            Playermovement.z=-1;
+            _playermovement.z=-1;
         }
         if (Input.GetKey(KeyCode.D))
         {
-            Playermovement.x = +1;
+            _playermovement.x = +1;
         }
         if (Input.GetKey(KeyCode.A))
         {
-            Playermovement.x=-1;
+            _playermovement.x=-1;
         }
 
-        PlayerTransform.Translate(Playermovement.normalized*PlayerSpeed*Time.deltaTime);
+        transform.Translate(_playermovement.normalized*_goblinStats.speed*Time.deltaTime);
 
-        Playermovement = new Vector3(0, 0, 0);
+        _playermovement = new Vector3(0, 0, 0);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if ((collision.transform.GetComponent(typeof(EnemyBehavior)) as EnemyBehavior).objectType == "enemy")
+        {
+            _uiController.VisualHpChange(_goblinStats.HpChange(-1));
+        }
     }
 }
