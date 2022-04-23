@@ -7,6 +7,7 @@ namespace DefaultNamespace
         public float damage;
         public float attackRadius;
         public float attackCD;
+        public int ore;
 
         public PlayerStats()
         {
@@ -15,6 +16,7 @@ namespace DefaultNamespace
             damage = 1;
             attackRadius = 1;
             attackCD = 1;
+            ore = 0;
         }
 
         public float HpChange(float change)

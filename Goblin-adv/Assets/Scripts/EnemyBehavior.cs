@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using DefaultNamespace;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class EnemyBehavior : MonoBehaviour
+public class EnemyBehavior : MonoBehaviour,IDamageableObject
 {
     // Start is called before the first frame update
     [SerializeField] private Transform player;
@@ -19,8 +20,7 @@ public class EnemyBehavior : MonoBehaviour
 
     private void Update()
     {
-        _position += speed * Time.deltaTime * (player.position - _position);
-        transform.position = _position;
+        transform.Translate(speed * Time.deltaTime * (player.position - transform.position).normalized);
     }
 
     public void ChangeTarget(Transform player)

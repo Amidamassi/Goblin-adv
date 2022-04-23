@@ -51,7 +51,7 @@ public class MouseController :MonoBehaviour
                 _ray = _camera.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(_ray, out var hit))
                 {
-                    _craftedObject.position = hit.point;
+                    _craftedObject.position =new Vector3(hit.point.x,_player.transform.position.y,hit.point.z);
                 }
                 if(Input.GetMouseButtonDown(1))
                 {
@@ -71,8 +71,6 @@ public class MouseController :MonoBehaviour
                     _attackVector3 = (Input.mousePosition - _screenCenter).normalized;
                     _attackCenter.x = _player.transform.position.x + _attackVector3.x;
                     _attackCenter.z = _player.transform.position.z + _attackVector3.y;
-                    Debug.Log(Input.mousePosition-_screenCenter);
-                    Debug.Log(Input.mousePosition +" and center "+_screenCenter);
                     _player.DealAttack(_attackCenter);
                 }
             }
