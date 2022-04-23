@@ -1,21 +1,26 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using DefaultNamespace;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Player : MonoBehaviour
 {
     private Vector3 _playermovement;
     private PlayerStats _playerStats;
-    [SerializeField] private UiController _uiController;
-    [SerializeField] private CraftController _craftController;
-    [SerializeField] private Transform _house;
+    [SerializeField] private UiController uiController;
+    [SerializeField] private CraftController craftController;
+    [SerializeField] private MouseController mouseController;
+    [FormerlySerializedAs("_house")] [SerializeField] private Transform house;
+    [SerializeField] private LayerMask _damageableLayerMask;
+    private float timer;
     void Start()
     {
         _playerStats = new PlayerStats();
-        _uiController.VisualHpChange(_playerStats.HpChange(0));
-        _craftController = new CraftController();
+        uiController.VisualHpChange(_playerStats.HpChange(0));
+        craftController = new CraftController();
     }
     void Update()
     {
@@ -42,20 +47,39 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            _craftController.Craft(_house,transform);
+            mouseController.StartCrafting(craftController.Craft(house, transform));
         }
 
-        if (_craftController.craftActive == true)
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            _craftController.MoveCraftedObject();
+            mouseController.StopCrafting();
         }
+
+        timer -= Time.deltaTime;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         if ((collision.transform.GetComponent(typeof(EnemyBehavior)) as EnemyBehavior).objectType == "enemy")
         {
-            _uiController.VisualHpChange(_playerStats.HpChange(-1));
+            uiController.VisualHpChange(_playerStats.HpChange(-1));
+        }
+    }
+
+    public void DealAttack(Vector3 attackCenter)
+    {
+        if(timer <=0){
+        Collider[] enemies = Physics.OverlapSphere(attackCenter, _playerStats.attackRadius,_damageableLayerMask);
+        if (enemies.Length != 0)
+        {
+            for (int i = 0; i < enemies.Length; i++)
+            {
+                enemies[i].GetComponent<EnemyBehavior>().TakeDamage(_playerStats.damage);
+            }
+
+            timer = _playerStats.attackCD;
+        }
+        
         }
     }
 }

@@ -34,12 +34,17 @@ public class EnemyBehavior : MonoBehaviour
         objectType = "enemy";
     }
 
-    private void OnCollisionEnter(Collision collision)
+  //  private void OnCollisionEnter(Collision collision)
+   // {
+   //     if (collision.transform == player.transform)
+   //     {
+   //         Debug.Log("коллизия");
+    //        Destroy(gameObject);
+    //    }
+   // }
+
+    public void TakeDamage(float damage)
     {
-        if (collision.transform == player.transform)
-        {
-            Debug.Log("коллизия");
-            Destroy(gameObject);
-        }
+        Destroy(gameObject);
     }
 }
