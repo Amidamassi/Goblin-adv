@@ -12,9 +12,13 @@ public class MouseController :MonoBehaviour
         private bool _craftActive;
         private Camera _camera;
         [SerializeField] private Player _player;
+        [SerializeField] private FieldController _fieldController;
         private Vector3 _attackCenter;
         private Vector3 _screenCenter;
         private Vector3 _attackVector3;
+        private Vector3 _hitOnFieldPosition;
+        private bool _wrongPlaceForCraft;
+        private Renderer _craftedObjectRender;
 
         private void Start()
         {
@@ -28,6 +32,7 @@ public class MouseController :MonoBehaviour
         {
             _craftedObject = transform;
             _craftActive = true;
+            _craftedObjectRender = _craftedObject.GetComponent<Renderer>();
         }
 
         public void StopCrafting()
@@ -51,7 +56,18 @@ public class MouseController :MonoBehaviour
                 _ray = _camera.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(_ray, out var hit))
                 {
-                    _craftedObject.position =new Vector3(hit.point.x,_player.transform.position.y,hit.point.z);
+                    _hitOnFieldPosition =new Vector3(hit.point.x,_player.transform.position.y,hit.point.z);
+                    _craftedObject.position = _fieldController.PlaceInCell(_hitOnFieldPosition);
+                    if (_fieldController.PositionIsEmpty(_hitOnFieldPosition))
+                    {
+                        _craftedObjectRender.material.color = Color.white;
+                        _wrongPlaceForCraft = false;
+                    }
+                    else
+                    {
+                        _craftedObjectRender.material.color = Color.red;
+                        _wrongPlaceForCraft = true;
+                    }
                 }
                 if(Input.GetMouseButtonDown(1))
                 {
@@ -60,7 +76,14 @@ public class MouseController :MonoBehaviour
 
                 if (Input.GetMouseButtonDown(0))
                 {
-                    CompleteCrafting();
+                    if (_wrongPlaceForCraft)
+                    {
+                        StopCrafting();
+                    }
+                    else
+                    {
+                        CompleteCrafting();
+                    }
                 }
                 
             }

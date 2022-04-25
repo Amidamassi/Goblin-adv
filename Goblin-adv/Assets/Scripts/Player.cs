@@ -6,7 +6,7 @@ using DefaultNamespace;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour,IDamageableObject
 {
     private Vector3 _playermovement;
     private PlayerStats _playerStats;
@@ -58,12 +58,16 @@ public class Player : MonoBehaviour
         _timer -= Time.deltaTime;
     }
 
-    private void OnCollisionEnter(Collision collision)
+    public void TakeDamage(float damage)
     {
-        Debug.Log("коллизия");
-        if ((collision.transform.GetComponent(typeof(EnemyBehavior)) as EnemyBehavior).objectType == "enemy")
+        uiController.VisualHpChange(_playerStats.HpChange(-1));
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Finish"))
         {
-            uiController.VisualHpChange(_playerStats.HpChange(-1));
+            Debug.Log("win");
         }
     }
 

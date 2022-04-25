@@ -14,9 +14,5 @@ public class CraftController
         craftedObject = Object.Instantiate(transform, player.position, Quaternion.identity);
         return craftedObject;
     }
-
- 
-    
-    
 }
 

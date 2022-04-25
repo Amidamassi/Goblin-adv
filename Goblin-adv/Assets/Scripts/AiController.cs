@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class AiController : MonoBehaviour
 {
-  [SerializeField] private Transform goblin;
+  [FormerlySerializedAs("_player")] [SerializeField] private Player player;
   public float spawnCd;
   public float spawnRange;
   [SerializeField] private Transform enemy;
@@ -17,7 +18,7 @@ public class AiController : MonoBehaviour
 
   void Start()
   {
-    StartSpawnEnemy();
+  //  StartSpawnEnemy();
   }
 
   private async void StartSpawnEnemy()
@@ -25,11 +26,11 @@ public class AiController : MonoBehaviour
     while (true)
     {
       await UniTask.Delay(TimeSpan.FromSeconds(spawnCd).Milliseconds);
-
+      
       _randomPosition = new Vector3(Random.Range(-spawnRange, spawnRange), 0, Random.Range(-spawnRange, spawnRange));
-      _enemyClone = Instantiate(enemy, goblin.position + _randomPosition, Quaternion.identity);
+      _enemyClone = Instantiate(enemy, player.transform.position + _randomPosition, Quaternion.identity);
       EnemyBehavior enemyBehavior = _enemyClone.GetComponent<EnemyBehavior>();
-      enemyBehavior.ChangeTarget(goblin);
+      enemyBehavior.ChangeTarget(player);
       enemyBehavior.objectType = "enemy";
     }
   }
