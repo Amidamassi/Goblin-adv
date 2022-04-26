@@ -10,7 +10,6 @@ namespace DefaultNamespace.Stats
             Value = value;
             if (Value > _baseHP*Modificator)
             {
-                Debug.Log("basehp" + _baseHP*Modificator);
                 Value = _baseHP*Modificator;
             }
         }

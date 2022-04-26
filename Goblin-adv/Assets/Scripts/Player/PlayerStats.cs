@@ -14,7 +14,7 @@ namespace DefaultNamespace
             hp.SetBaseValue(10);
             hp.SetValue(10);
             speed.SetValue(3);
-            BaseAttackStats.SetValue(1);
+            BaseAttackStats.SetValue(4);
             BaseAttackStats.AttackRadius = 0.35f;
             BaseAttackStats.AttackCD = 1;
             Ore = 0;

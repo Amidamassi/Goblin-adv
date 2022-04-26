@@ -15,9 +15,9 @@ using Random = UnityEngine.Random;
     {
         
         public RangeEnemy()
-        {
+        { 
+        hp.SetBaseValue(10); 
         hp.SetValue(10);
-        hp.SetBaseValue(10);
         baseAttackStats.SetValue(1);
         baseAttackStats.AttackRadius = 3;
         baseAttackStats.AttackCD = 2;

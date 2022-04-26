@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using DefaultNamespace;
+using DefaultNamespace.Stats;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -64,13 +65,18 @@ public class EnemyBehavior : MonoBehaviour,IDamageableObject
     }
     public void TakeDamage(float damage)
     {
-        _onDeadAction.Invoke(_enemy.reward);
-        Destroy(gameObject);
+        _enemy.hp.SetValue(_enemy.hp.GetValue() - damage);
+        Debug.Log(_enemy.hp.GetValue());
+        if (_enemy.hp.GetValue() <= 0)
+        {
+            LoseAllHp();
+        }
     }
 
     public void LoseAllHp()
     {
-         
+        _onDeadAction.Invoke(_enemy.reward);
+        Destroy(gameObject);
     }
 
     public void SelectEnemyType(Enemy enemy)
