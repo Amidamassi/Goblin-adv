@@ -13,8 +13,9 @@ public class FieldController : MonoBehaviour
     private Vector2 _leftUpCorner;
     private Vector2 _rightDownCorner;
     private Vector2 _cellSize;
-    [SerializeField] private GameObject ore;
+    [SerializeField] private OreController ore;
     private (int,int) _targetCell;
+    [SerializeField] private Player _player;
     public void CreateField(Vector2 firstCorner, Vector2 secondCorner,int height, int width)
     {
         _leftUpCorner.x = Mathf.Min(firstCorner.x, secondCorner.x);
@@ -37,7 +38,8 @@ public class FieldController : MonoBehaviour
                         _cellSize);
                 if (Random.value > 0.5)
                 {
-                    Instantiate(ore, _field[i, j].CenterCoordinatesWorld, Quaternion.identity);
+                    Instantiate(ore, _field[i, j].CenterCoordinatesWorld, Quaternion.identity).InitDeadAction(OnDeadOreAction);
+                    
                     _field[i, j]._empty = false;
                 }
             }
@@ -48,7 +50,7 @@ public class FieldController : MonoBehaviour
 
     private void Start()
     {
-        CreateField(new Vector2(-50, 50), new Vector2(50, -50), 100, 100);
+        CreateField(new Vector2(-100, 100), new Vector2(100, -100), 200, 200);
     }
 
     public bool PositionIsEmpty(Vector3 coordinates)
@@ -61,5 +63,9 @@ public class FieldController : MonoBehaviour
     {
         _targetCell  =( Mathf.FloorToInt(((coordinates.x - _leftUpCorner.x) / _cellSize.x)),Mathf.FloorToInt(((coordinates.z - _rightDownCorner.y) / _cellSize.y)));
         return _field[_targetCell.Item1, _targetCell.Item2].CenterCoordinatesWorld;
+    }
+    private void OnDeadOreAction(int oreChange)
+    {
+        _player.OreChange(oreChange);
     }
 }

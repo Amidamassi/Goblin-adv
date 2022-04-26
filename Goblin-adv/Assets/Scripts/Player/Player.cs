@@ -20,6 +20,7 @@ public class Player : MonoBehaviour,IDamageableObject
     {
         _playerStats = new PlayerStats();
         uiController.VisualHpChange(_playerStats.HpChange(0));
+        uiController.VisualOreChange(_playerStats.OreChange(0));
         _craftController = new CraftController();
     }
     void Update()
@@ -41,7 +42,7 @@ public class Player : MonoBehaviour,IDamageableObject
             _playermovement.x=-1;
         }
 
-        transform.Translate(_playerStats.speed*Time.deltaTime *_playermovement.normalized);
+        transform.Translate(_playerStats.speed.GetValue()*Time.deltaTime *_playermovement.normalized);
 
         _playermovement = new Vector3(0, 0, 0);
 
@@ -63,6 +64,11 @@ public class Player : MonoBehaviour,IDamageableObject
         uiController.VisualHpChange(_playerStats.HpChange(-1));
     }
 
+    public void LoseAllHp()
+    {
+        
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Finish"))
@@ -74,17 +80,37 @@ public class Player : MonoBehaviour,IDamageableObject
     public void DealAttack(Vector3 attackCenter)
     {
         if(_timer <=0){
-        Collider[] enemies = Physics.OverlapSphere(attackCenter, _playerStats.attackRadius,_damageableLayerMask);
+        Collider[] enemies = Physics.OverlapSphere(attackCenter, _playerStats.BaseAttackStats.AttackRadius,_damageableLayerMask);
         if (enemies.Length != 0)
         {
             for (int i = 0; i < enemies.Length; i++)
             {
-                enemies[i].GetComponent<IDamageableObject>().TakeDamage(_playerStats.damage);
+                enemies[i].GetComponent<IDamageableObject>().TakeDamage(_playerStats.BaseAttackStats.GetValue());
             }
 
-            _timer = _playerStats.attackCD;
+            _timer = _playerStats.BaseAttackStats.AttackCD;
         }
         
         }
+    }
+
+    public void OreChange(int change)
+    {
+        uiController.VisualOreChange(_playerStats.OreChange(change));
+        
+    }
+
+    public void UpgradeAttack()
+    {
+        _playerStats.BaseAttackStats.SetValue(_playerStats.BaseAttackStats.GetValue()+1);
+    }
+    public void UpgradeSpeed()
+    {
+        _playerStats.speed.SetValue(_playerStats.speed.GetValue()+1);
+    }
+
+    public void Heal()
+    {
+        uiController.VisualHpChange(_playerStats.HpChange(3));
     }
 }

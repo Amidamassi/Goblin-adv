@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.PlayerLoop;
 using UnityEngine.Serialization;
 using Object = UnityEngine.Object;
+using UnityEngine.EventSystems;
 public class MouseController :MonoBehaviour
     {
         private Ray _ray;
@@ -69,6 +70,7 @@ public class MouseController :MonoBehaviour
                         _wrongPlaceForCraft = true;
                     }
                 }
+                if(!EventSystem.current.IsPointerOverGameObject()){
                 if(Input.GetMouseButtonDown(1))
                 {
                     StopCrafting();
@@ -85,16 +87,21 @@ public class MouseController :MonoBehaviour
                         CompleteCrafting();
                     }
                 }
+                }
                 
             }
             else
             {
                 if (Input.GetMouseButtonDown(0))
                 {
-                    _attackVector3 = (Input.mousePosition - _screenCenter).normalized;
-                    _attackCenter.x = _player.transform.position.x + _attackVector3.x;
-                    _attackCenter.z = _player.transform.position.z + _attackVector3.y;
-                    _player.DealAttack(_attackCenter);
+                    if (!EventSystem.current.IsPointerOverGameObject())
+                    {
+
+                        _attackVector3 = (Input.mousePosition - _screenCenter).normalized;
+                        _attackCenter.x = _player.transform.position.x + _attackVector3.x;
+                        _attackCenter.z = _player.transform.position.z + _attackVector3.y;
+                        _player.DealAttack(_attackCenter);
+                    }
                 }
             }
             

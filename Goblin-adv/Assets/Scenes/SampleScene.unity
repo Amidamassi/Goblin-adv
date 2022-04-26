@@ -345,8 +345,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1915098780}
-  spawnCd: 0.1
-  spawnRange: 10
+  spawnCd: 59.34
+  minSpawnRange: 5
+  maxSpawnRange: 8
   enemy: {fileID: 4501624669902875316, guid: deb3d8882844cad4b8b974e04370f666, type: 3}
 --- !u!114 &926661122
 MonoBehaviour:
@@ -402,6 +403,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _player: {fileID: 1915098780}
+  _fieldController: {fileID: 0}
 --- !u!1 &1821772660
 GameObject:
   m_ObjectHideFlags: 0
