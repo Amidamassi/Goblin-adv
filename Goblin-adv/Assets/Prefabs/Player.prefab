@@ -95,6 +95,7 @@ GameObject:
   - component: {fileID: 6033899908273426673}
   - component: {fileID: 6033899908273426674}
   - component: {fileID: 6033899908273426675}
+  - component: {fileID: 3484346189188896852}
   - component: {fileID: 6033899908273426679}
   - component: {fileID: 1276747143}
   - component: {fileID: 1276747147}
@@ -180,6 +181,19 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3484346189188896852
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6033899908273426684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1414eed112a345b1952d8daf923b0eba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _configPassives: {fileID: 11400000, guid: a57468f27fb5f5c4aa85af70280c6968, type: 2}
 --- !u!114 &6033899908273426679
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -198,6 +212,9 @@ MonoBehaviour:
   _damageableLayerMask:
     serializedVersion: 2
     m_Bits: 512
+  _interactiveLayerMask:
+    serializedVersion: 2
+    m_Bits: 1024
 --- !u!54 &1276747143
 Rigidbody:
   m_ObjectHideFlags: 0

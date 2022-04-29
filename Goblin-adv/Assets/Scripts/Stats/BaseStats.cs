@@ -1,7 +1,8 @@
-namespace DefaultNamespace.Stats
-{
+using System;
+
     public class BaseStats
     {
+        protected StatsEnum statType;
         protected float Value;
         protected float Modificator = 1;
 
@@ -20,4 +21,11 @@ namespace DefaultNamespace.Stats
             Modificator += change;
         }
     }
-}
+
+    public enum StatsEnum
+    {
+        Hp=1,
+        Speed=2,
+        BaseAttackStats=3,
+        Rage=4
+    }

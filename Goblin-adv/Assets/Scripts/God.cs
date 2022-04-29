@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class God : MonoBehaviour
 {
-    [SerializeField] UiController _uiController;
+    [SerializeField] private UiController _uiController;
     [SerializeField] private Player _player;
-   
+    [SerializeField] private FieldController _fieldController;
 }

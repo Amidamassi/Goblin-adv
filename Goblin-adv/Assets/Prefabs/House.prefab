@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6680848271225753333}
   - component: {fileID: 7053729451047688257}
   - component: {fileID: 6528799216862765003}
+  - component: {fileID: 1594612046966700931}
   - component: {fileID: -3712880845940126833}
   m_Layer: 0
   m_Name: House
@@ -94,6 +95,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1594612046966700931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8708990367233996599}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b260a55b2e144bbf89b0d6a7eba1f0d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _uiController: {fileID: 0}
 --- !u!208 &-3712880845940126833
 NavMeshObstacle:
   m_ObjectHideFlags: 0
