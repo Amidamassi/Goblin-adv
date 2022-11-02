@@ -8,21 +8,24 @@ namespace DefaultNamespace
         public Speed speed = new Speed();
         public Hp hp = new Hp();
         public BaseAttackStats BaseAttackStats=new BaseAttackStats();
+        public HpRegeneration hpRegeneration = new HpRegeneration();
         public int Ore;
         public Rage rage = new Rage();
-        public ISkill Skill1;
-        public ISkill Skill2;
+        public Skill Skill1;
+        public Skill Skill2;
         public List<BaseStats> Stats=new List<BaseStats>();
 
         public PlayerStats()
         {
-            hp.SetBaseValue(10);
+            hp.SetMaxValue(10);
             hp.SetValue(10);
             speed.SetValue(3);
             BaseAttackStats.SetValue(2);
             BaseAttackStats.AttackRadius = 0.35f;
             BaseAttackStats.AttackCD = 0.5f;
             Ore = 0;
+            rage.SetMaxValue(10);
+            hpRegeneration.SetValue(1);
             Stats.Add(hp);
             Stats.Add(speed);
             Stats.Add(BaseAttackStats);
@@ -40,5 +43,6 @@ namespace DefaultNamespace
             Ore += change;
             return Ore;
         }
+        
     }
 }

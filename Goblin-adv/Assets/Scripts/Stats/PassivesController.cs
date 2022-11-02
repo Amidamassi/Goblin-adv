@@ -17,7 +17,7 @@ namespace DefaultNamespace.Stats
                 switch (passive.stat)
             {
                 case StatsEnum.Hp:
-                    playerStats.hp.SetBaseValue(playerStats.hp.GetBaseValue()+passive.Value);
+                    playerStats.hp.SetMaxValue(playerStats.hp.GetMaxValue()+passive.Value);
                     break;
                 case StatsEnum.Speed:
                     playerStats.speed.SetValue(playerStats.speed.GetValue()+passive.Value);

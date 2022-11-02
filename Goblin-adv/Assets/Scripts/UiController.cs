@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using DefaultNamespace.Stats;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 using UnityEngine.Serialization;
@@ -8,29 +9,32 @@ using UnityEngine.UI;
 
 public class UiController : MonoBehaviour
 {
-    [SerializeField] private Text _hp;
+    [SerializeField] private Image _hp;
     [SerializeField] private Text _ore;
     [SerializeField] private Image _attackImage;
     [SerializeField] private Image _skill1Image;
     [SerializeField] private Image _skill2Image;
     [SerializeField] private TraderWindowController _traderWindow;
-    [SerializeField] private Text _rage;
+    [SerializeField] private Image _rage;
+
+    [SerializeField] private GameObject LoseWindow;
     private float _attackTimer;
     private float _skill1Timer;
     private float _skill2Timer;
+    
 
-    public void VisualHpChange(float newHp)
+    public void VisualHpChange(float newHp,float newMaxHp)
     {
-        _hp.text = newHp.ToString();
+        _hp.fillAmount = newHp/newMaxHp;
     }
 
     public void VisualOreChange(float newOre)
     {
         _ore.text = newOre.ToString();
     }
-    public void VisualRageChange(float newRage)
+    public void VisualRageChange(float newRage,float newMaxRage)
     {
-        _rage.text = newRage.ToString();
+        _rage.fillAmount = newRage/newMaxRage;
     }
 
     public void DealAttack(float timer)
@@ -71,5 +75,23 @@ public class UiController : MonoBehaviour
     {
         _traderWindow.gameObject.SetActive(true);
         _traderWindow.initialization(passives);
+    }
+
+    public void OpenLoseWindow()
+    {
+        LoseWindow.SetActive(true);
+    }
+
+    public void AddPassiveTraderWindow(Action<Passives> action)
+    {
+        _traderWindow.AddPassive(action);
+    }
+
+    public void UpdatePlayerVisual(Hp hp,Rage rage,float ore)
+    {
+        VisualHpChange(hp.GetValue(),hp.GetMaxValue());
+        VisualRageChange(rage.GetValue(),rage.GetMaxValue());
+        VisualOreChange(ore);
+        
     }
 }

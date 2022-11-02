@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using DefaultNamespace.Stats;
 using UnityEngine;
@@ -14,6 +15,7 @@ public class TraderWindowController : MonoBehaviour
     [SerializeField] private Text _passive3Description;
     public Player _Player;
     private Passives[] _chosenPassives;
+    private Action<Passives> _addPassiveAction;
     public void initialization(Passives[] passivesArray)
     {
         _chosenPassives = passivesArray;
@@ -28,8 +30,13 @@ public class TraderWindowController : MonoBehaviour
 
     public void ApplyPassive(int number)
     {
-        _Player.AddPassive(_chosenPassives[number]);
+        _addPassiveAction.Invoke(_chosenPassives[number]);
         gameObject.SetActive(false);
+    }
+
+    public void AddPassive(Action<Passives> action)
+    {
+        _addPassiveAction = action;
     }
 
     // Update is called once per frame

@@ -15,7 +15,7 @@ public class OreController : MonoBehaviour,IDamageableObject
 
     private void Start()
     {
-        _hp.SetBaseValue(8);
+        _hp.SetMaxValue(8);
         _hp.SetValue(8);
     }
 

@@ -11,7 +11,7 @@ using Random = UnityEngine.Random;
     {
         public MeleeEnemy()
         {
-        hp.SetBaseValue(10);
+        hp.SetMaxValue(10);
         hp.SetValue(10);
         baseAttackStats.SetValue(1);
         baseAttackStats.AttackRadius = 1.5f;

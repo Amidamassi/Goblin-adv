@@ -22,7 +22,6 @@ public class FieldController : MonoBehaviour
     [SerializeField] private Player _player;
     private List<Cell> _emptyCells = new List<Cell>();
     [SerializeField] private int tradeHouseCount;
-    [SerializeField] private PassivesController _passivesController;
     public void CreateField(Vector2 firstCorner, Vector2 secondCorner,int height, int width)
     {
         _leftUpCorner.x = Mathf.Min(firstCorner.x, secondCorner.x);
@@ -66,7 +65,7 @@ public class FieldController : MonoBehaviour
         Debug.Log(_field);
     }
 
-    private void Start()
+    public void Initialize()
     {
         CreateField(new Vector2(-50, 50), new Vector2(50, -50), 100, 100);
     }
@@ -89,7 +88,7 @@ public class FieldController : MonoBehaviour
 
     private void OpenTradeHouse(Vector3 position)
     {
-        _player.uiController.OpenTraderWindow(_passivesController.GetAviableRandomPassives(3));
+        _player.uiController.OpenTraderWindow(_player.passivesController.GetAviableRandomPassives(3));
         MakeCellEmpty(position);
     }
 

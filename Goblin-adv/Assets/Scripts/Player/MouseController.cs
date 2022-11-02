@@ -12,21 +12,24 @@ public class MouseController :MonoBehaviour
         private Transform _craftedObject;
         private bool _craftActive;
         private Camera _camera;
-        [SerializeField] private Player _player;
-        [SerializeField] private FieldController _fieldController;
         private Vector3 _attackCenter;
         private Vector3 _screenCenter;
         private Vector3 _attackVector3;
         private Vector3 _hitOnFieldPosition;
         private bool _wrongPlaceForCraft;
         private Renderer _craftedObjectRender;
+        private Transform _playerPosition;
+        private Action<Vector3> _dealAttackAction;
+        private Func<Vector3,Vector3> _placeInCellAction;
+        private Func<Vector3, bool> _isPositionEmptyAction;
 
-        private void Start()
+        public void Initialize(Transform playerPosition)
         {
+            _playerPosition = playerPosition;
             _camera = Camera.main;
             _screenCenter.x = _camera.pixelWidth/2;
             _screenCenter.y = _camera.pixelHeight/2;
-            _attackCenter = _player.transform.position;
+            _attackCenter = _playerPosition.position;
         }
 
         public void StartCrafting(Transform transform)
@@ -57,9 +60,9 @@ public class MouseController :MonoBehaviour
                 _ray = _camera.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(_ray, out var hit))
                 {
-                    _hitOnFieldPosition =new Vector3(hit.point.x,_player.transform.position.y,hit.point.z);
-                    _craftedObject.position = _fieldController.PlaceInCell(_hitOnFieldPosition);
-                    if (_fieldController.PositionIsEmpty(_hitOnFieldPosition))
+                    _hitOnFieldPosition =new Vector3(hit.point.x,_playerPosition.position.y,hit.point.z);
+                    _craftedObject.position = _placeInCellAction.Invoke(_hitOnFieldPosition);
+                    if (_isPositionEmptyAction.Invoke(_hitOnFieldPosition))
                     {
                         _craftedObjectRender.material.color = Color.white;
                         _wrongPlaceForCraft = false;
@@ -98,9 +101,9 @@ public class MouseController :MonoBehaviour
                     {
 
                         _attackVector3 = (Input.mousePosition - _screenCenter).normalized;
-                        _attackCenter.x = _player.transform.position.x + _attackVector3.x;
-                        _attackCenter.z = _player.transform.position.z + _attackVector3.y;
-                        _player.DealAttack(_attackCenter);
+                        _attackCenter.x = _playerPosition.position.x + _attackVector3.x;
+                        _attackCenter.z = _playerPosition.position.z + _attackVector3.y;
+                        _dealAttackAction.Invoke(_attackCenter);
                     }
                 }
             }
@@ -109,5 +112,19 @@ public class MouseController :MonoBehaviour
            
 
         }
-       
+
+        public void DealAttack(Action<Vector3> action)
+        {
+            _dealAttackAction = action;
+        }
+
+        public void PlaceInCell(Func<Vector3,Vector3> action)
+        {
+            _placeInCellAction = action;
+        }
+
+        public void IsPositionEmpty(Func<Vector3,bool> action)
+        {
+            _isPositionEmptyAction = action;
+        }
     }

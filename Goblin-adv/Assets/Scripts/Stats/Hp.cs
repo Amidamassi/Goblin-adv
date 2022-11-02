@@ -4,14 +4,14 @@ namespace DefaultNamespace.Stats
 {
     public class Hp:BaseStats
     {
-        private float _baseHP;
+        private float _maxHP;
         public new StatsEnum statType = StatsEnum.Hp;
         public void SetValue(float value)
         {
             Value = value;
-            if (Value > _baseHP*Modificator)
+            if (Value > _maxHP*Modificator)
             {
-                Value = _baseHP*Modificator;
+                Value = _maxHP*Modificator;
             }
         }
 
@@ -20,13 +20,13 @@ namespace DefaultNamespace.Stats
             return Value;
         }
 
-        public void SetBaseValue(float value)
+        public void SetMaxValue(float value)
         {
-            _baseHP = value;
+            _maxHP = value;
         }
-        public float GetBaseValue()
+        public float GetMaxValue()
         {
-            return _baseHP;
+            return _maxHP;
         }
     }
 }

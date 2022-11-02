@@ -1,11 +1,13 @@
 
 using UnityEngine;
 
-    public interface ISkill
+    public class Skill
     {
-        float Timer { set; get; }
-        float Cost { set; get; }
-        string CostType { set; get;}
-        void CastSkill(Transform player,LayerMask layerMask);
-        float GetSkillCD();
+        public float Timer { set; get; }
+        public float Cost { set; get; }
+        public string CostType { set; get;}
+        public float _skillCD { set; get; }
+        public float SkillRange{ set; get; }
+        public float Damage { set; get; }
+        
     }

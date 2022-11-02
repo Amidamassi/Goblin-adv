@@ -5,6 +5,7 @@ using System.Threading;
 using DefaultNamespace;
 using DefaultNamespace.Stats;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 using UnityEngine.Serialization;
 
 public class Player : MonoBehaviour, IDamageableObject
@@ -13,25 +14,33 @@ public class Player : MonoBehaviour, IDamageableObject
     public PlayerStats _playerStats;
     [SerializeField] public UiController uiController;
     private CraftController _craftController;
-    [SerializeField] private MouseController mouseController;
 
+    [SerializeField] private SkillController _skillController;
     [FormerlySerializedAs("_house")] [SerializeField]
     private Transform house;
 
     [SerializeField] private LayerMask _damageableLayerMask;
     [SerializeField] private LayerMask _interactiveLayerMask;
     private float _timer;
-    [SerializeField] private PassivesController _passivesController;
+    [SerializeField] public PassivesController passivesController;
 
-    void Start()
+    private Action<Transform> _startCraftAction;
+    private Action _stopCraftAction;
+
+    public void Initialize()
     {
         _playerStats = new PlayerStats();
-        uiController.VisualHpChange(_playerStats.HpChange(0));
+        uiController.VisualHpChange(_playerStats.HpChange(0),_playerStats.hp.GetMaxValue());
         uiController.VisualOreChange(_playerStats.OreChange(0));
-        uiController.VisualRageChange(_playerStats.rage.GetValue());
+        uiController.VisualRageChange(_playerStats.rage.GetValue(),_playerStats.rage.GetMaxValue());
         _craftController = new CraftController();
         _playerStats.Skill1 = new GroundSlam();
         _playerStats.Skill2 = new ShockWave();
+    }
+
+    private void FixedUpdate()
+    {
+        uiController.UpdatePlayerVisual(_playerStats.hp,_playerStats.rage,_playerStats.Ore);
     }
 
     void Update()
@@ -60,8 +69,8 @@ public class Player : MonoBehaviour, IDamageableObject
         {
             if (TryCastSkill(_playerStats.Skill1))
             {
-                uiController.CastSkill1(_playerStats.Skill1.GetSkillCD());
-                _playerStats.Skill1.CastSkill(this.transform, _damageableLayerMask);
+                uiController.CastSkill1(_playerStats.Skill1._skillCD);
+                _skillController.CastSkill(_playerStats.Skill1,this.transform, _damageableLayerMask);
                 PaySkillCost(_playerStats.Skill1);
             }
 
@@ -71,19 +80,17 @@ public class Player : MonoBehaviour, IDamageableObject
         {
             if (TryCastSkill(_playerStats.Skill2))
             {
-                uiController.CastSkill2(_playerStats.Skill2.GetSkillCD());
-                _playerStats.Skill2.CastSkill(this.transform, _damageableLayerMask);
+                uiController.CastSkill2(_playerStats.Skill2._skillCD);
+                _skillController.CastSkill(_playerStats.Skill2,this.transform, _damageableLayerMask);
                 PaySkillCost(_playerStats.Skill2);
             }
         }
 
         if (Input.GetKey(KeyCode.F))
         {
-            Debug.Log("zei");
             Collider[] obj = Physics.OverlapSphere(transform.position, 1, _interactiveLayerMask);
             if (obj.Length != 0)
             {
-                Debug.Log("zei1");
                 for (int i = 0; i < obj.Length; i++)
                 {
                     obj[i].GetComponent<IInteractive>().Action();
@@ -97,22 +104,26 @@ public class Player : MonoBehaviour, IDamageableObject
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            mouseController.StartCrafting(_craftController.Craft(house, transform));
+            _startCraftAction.Invoke(_craftController.Craft(house, transform));
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            mouseController.StopCrafting();
+            _stopCraftAction.Invoke();
         }
 
         _playerStats.Skill1.Timer -= Time.deltaTime;
         _playerStats.Skill2.Timer -= Time.deltaTime;
         _timer -= Time.deltaTime;
+        if (_playerStats.hp.GetValue() <= 0)
+        {
+            uiController.OpenLoseWindow();
+        }
     }
 
     public void TakeDamage(float damage)
     {
-        uiController.VisualHpChange(_playerStats.HpChange(-1));
+        _playerStats.HpChange(-damage);
     }
 
     public void LoseAllHp()
@@ -139,7 +150,7 @@ public class Player : MonoBehaviour, IDamageableObject
             if (enemies.Length != 0)
             {
                 _playerStats.rage.SetValue(_playerStats.rage.GetValue() + 1);
-                uiController.VisualRageChange(_playerStats.rage.GetValue());
+                uiController.VisualRageChange(_playerStats.rage.GetValue(),_playerStats.rage.GetMaxValue());
                 for (int i = 0; i < enemies.Length; i++)
                 {
                     enemies[i].GetComponent<IDamageableObject>().TakeDamage(_playerStats.BaseAttackStats.GetValue());
@@ -153,7 +164,7 @@ public class Player : MonoBehaviour, IDamageableObject
 
     public void OreChange(int change)
     {
-        uiController.VisualOreChange(_playerStats.OreChange(change));
+        _playerStats.OreChange(change);
 
     }
 
@@ -169,10 +180,11 @@ public class Player : MonoBehaviour, IDamageableObject
 
     public void Heal()
     {
-        uiController.VisualHpChange(_playerStats.HpChange(3));
+        _playerStats.HpChange(3);
     }
+    
 
-    private bool TryCastSkill(ISkill skill)
+    private bool TryCastSkill(Skill skill)
     {
         if ((skill.Timer <= 0)&(CheckSkillCost(skill)))
         {
@@ -184,7 +196,7 @@ public class Player : MonoBehaviour, IDamageableObject
         }
     }
 
-    private bool CheckSkillCost(ISkill skill)
+    private bool CheckSkillCost(Skill skill)
     {
         switch (skill.CostType)
         {
@@ -195,13 +207,13 @@ public class Player : MonoBehaviour, IDamageableObject
         return false;
     }
 
-    private void PaySkillCost(ISkill skill)
+    private void PaySkillCost(Skill skill)
     {
         switch (skill.CostType)
         {
             case "Rage":
                 _playerStats.rage.SetValue(_playerStats.rage.GetValue() - skill.Cost);
-                uiController.VisualRageChange(_playerStats.rage.GetValue());
+                _playerStats.rage.GetValue();
 
                 break;
         }
@@ -209,7 +221,16 @@ public class Player : MonoBehaviour, IDamageableObject
 
     public void AddPassive(Passives passive)
     {
-        _passivesController.AddPassive(_playerStats, passive);
+        passivesController.AddPassive(_playerStats, passive);
+    }
+    
+    public void StartCraft(Action<Transform> action)
+    {
+        _startCraftAction = action;
+    }
+    public void StopCraft(Action action)
+    {
+        _stopCraftAction = action;
     }
 
 }
